@@ -1,6 +1,7 @@
 package nl.tudelft.trustchain.currencyii
 
 import android.util.Log
+import com.google.gson.JsonSyntaxException
 import nl.tudelft.ipv8.Community
 import nl.tudelft.ipv8.android.IPv8Android
 import nl.tudelft.trustchain.currencyii.coin.WalletManager
@@ -12,7 +13,6 @@ import nl.tudelft.trustchain.currencyii.sharedWallet.*
 import org.bitcoinj.core.Coin
 import org.bitcoinj.core.ECKey
 import org.bitcoinj.core.Transaction
-import org.json.JSONException
 
 @Suppress("UNCHECKED_CAST")
 class CoinCommunity : Community() {
@@ -158,6 +158,10 @@ class CoinCommunity : Community() {
             getTrustChainCommunity().database.getBlockWithHash(swBlockHash)
                 ?: throw IllegalStateException("Shared Wallet not found given the hash: $swBlockHash")
 
+        println("In addSharedWalletJoinBlock:")
+        println(swJoinBlock.transaction)
+        println()
+
         val block = SWJoinBlockTransactionData(swJoinBlock.transaction)
         val oldTrustChainPks = block.getData().SW_TRUSTCHAIN_PKS.toMutableList()
         block.addBitcoinPk(WalletManagerAndroid.getInstance().networkPublicECKeyHex())
@@ -210,7 +214,7 @@ class CoinCommunity : Community() {
     private fun tryToFetchSerializedTransaction(block: TrustChainBlock): String? {
         return try {
             SWUtil.parseTransaction(block.transaction).get(SW_TRANSACTION_SERIALIZED).asString
-        } catch (exception: JSONException) {
+        } catch (exception: JsonSyntaxException) {
             null
         }
     }

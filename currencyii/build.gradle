@@ -92,10 +92,14 @@ dependencies {
 
     implementation 'com.mattskala:itemadapter:0.3'
 
+    // Crypto
+    implementation "com.goterl.lazycode:lazysodium-java:4.2.4"
+
     // Testing
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "com.squareup.sqldelight:sqlite-driver:$sqldelight_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
