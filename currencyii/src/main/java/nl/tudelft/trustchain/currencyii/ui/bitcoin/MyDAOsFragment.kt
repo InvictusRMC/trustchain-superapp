@@ -21,6 +21,7 @@ class MyDAOsFragment : BaseFragment(R.layout.fragment_my_daos) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initMyDAOsView()
+        initProposalsView()
     }
 
     override fun onCreateView(
@@ -77,6 +78,15 @@ class MyDAOsFragment : BaseFragment(R.layout.fragment_my_daos) {
         if (sharedWalletBlocks.isEmpty()) {
             enrolled_text.text =
                 "You are currently not enrolled in any DAOs. Press the + button to join or create one."
+        }
+    }
+
+    private fun initProposalsView() {
+        val adaptor =
+            ProposalListAdapter(this, emptyList(), emptyList())
+        proposal_list_view.adapter = adaptor
+        my_daos_list_view.setOnItemClickListener { _, view, position, id ->
+            Log.i("Coin", "Clicked: $view, $position, $id")
         }
     }
 }
