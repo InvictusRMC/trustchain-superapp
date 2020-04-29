@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_join_network.*
 import kotlinx.coroutines.*
-import nl.tudelft.trustchain.currencyii.CoinCommunity
 import nl.tudelft.trustchain.currencyii.ui.BaseFragment
 import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.ipv8.util.toHex
@@ -92,35 +91,28 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
     }
 
     private fun updateSharedWallets(newWallets: List<TrustChainBlock>) {
-        val walletIds = fetchedWallets.map {
-            SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
-        }
-        val timestamps = fetchedWallets.map {
-            it.timestamp
-        }
-        val distinctById = newWallets
-            .filter {
-                // Make sure that the trust chain block has the correct type
-                it.type == CoinCommunity.JOIN_BLOCK
-            }
+        val newMostRecentUniqueWallets = newWallets
             .sortedByDescending { it.timestamp }
             .distinctBy {
                 SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
             }
+        Log.i("Coin", "${newMostRecentUniqueWallets.size} unique wallets founds. Adding if not present already.")
 
-        Log.i("Coin", "${distinctById.size} unique wallets founds. Adding if not present already.")
-
-        for (wallet in distinctById) {
-            val currentId = SWJoinBlockTransactionData(wallet.transaction).getData().SW_UNIQUE_ID
-            if (!walletIds.contains(currentId)) {
+        for (wallet in newMostRecentUniqueWallets) {
+            val currentWallet = SWJoinBlockTransactionData(wallet.transaction).getData()
+            val found = lookForWalletInState(currentWallet.SW_UNIQUE_ID)
+            if (found.isEmpty()) {
                 fetchedWallets.add(wallet)
             } else {
-                // Wallet already present, check if the crawled wallet is newer
-                val timestamp = timestamps[walletIds.indexOf(currentId)]
-                if (timestamp < wallet.timestamp) {
-                    fetchedWallets.add(wallet)
-                }
+                val mostRecentWallet = found.union(listOf(wallet)).maxBy { it.timestamp }!!
+                fetchedWallets[fetchedWallets.indexOf(wallet)] = mostRecentWallet
             }
+        }
+    }
+
+    private fun lookForWalletInState(forId: String): List<TrustChainBlock> {
+        return fetchedWallets.filter {
+            SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID == forId
         }
     }
 
