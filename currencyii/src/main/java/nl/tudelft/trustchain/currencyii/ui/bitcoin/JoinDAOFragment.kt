@@ -169,7 +169,7 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                     val crawlResult = trustchain
                         .getChainByUser(peer.publicKey.keyToBin())
                     if (crawlResult.size > 0) {
-                        Log.i("Coin", "Found ${crawlResult.size} crawled wallets from ${peer.publicKey.keyToBin().toHex()}")
+                        Log.i("Coin", "Found ${crawlResult.size} crawled wallets from ${peer.address.ip}")
                     }
                     updateSharedWallets(crawlResult)
                 }
