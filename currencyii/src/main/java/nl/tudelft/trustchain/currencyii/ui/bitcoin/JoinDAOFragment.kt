@@ -105,7 +105,7 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                 fetchedWallets.add(wallet)
             } else {
                 val mostRecentWallet = found.union(listOf(wallet)).maxBy { it.timestamp }!!
-                fetchedWallets[fetchedWallets.indexOf(wallet)] = mostRecentWallet
+                fetchedWallets[fetchedWallets.indexOf(found[0])] = mostRecentWallet
             }
         }
     }
