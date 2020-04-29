@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import nl.tudelft.trustchain.currencyii.ui.BaseFragment
 import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.ipv8.util.toHex
+import nl.tudelft.trustchain.currencyii.CoinCommunity
 import nl.tudelft.trustchain.currencyii.R
 import nl.tudelft.trustchain.currencyii.sharedWallet.SWJoinBlockTransactionData
 import nl.tudelft.trustchain.currencyii.sharedWallet.SWSignatureAskBlockTD
@@ -96,6 +97,10 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
         temp.addAll(newWallets)
 
         val result = ArrayList(temp
+            .filter {
+                // Make sure that the trust chain block has the correct type
+                it.type == CoinCommunity.JOIN_BLOCK
+            }
             .sortedByDescending { it.timestamp }
             .distinctBy {
                 SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
