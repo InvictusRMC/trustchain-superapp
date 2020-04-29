@@ -102,7 +102,9 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
             .filter {
                 // Make sure that the trust chain block has the correct type
                 it.type == CoinCommunity.JOIN_BLOCK
-            }.distinctBy {
+            }
+            .sortedByDescending { it.timestamp }
+            .distinctBy {
                 SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
             }
 
