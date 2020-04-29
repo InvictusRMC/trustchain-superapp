@@ -91,29 +91,18 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
     }
 
     private fun updateSharedWallets(newWallets: List<TrustChainBlock>) {
-        val newMostRecentUniqueWallets = newWallets
+        val temp = ArrayList<TrustChainBlock>()
+        temp.addAll(fetchedWallets)
+        temp.addAll(newWallets)
+
+        val result = ArrayList(temp
             .sortedByDescending { it.timestamp }
             .distinctBy {
                 SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
             }
-        Log.i("Coin", "${newMostRecentUniqueWallets.size} unique wallets founds. Adding if not present already.")
+        )
 
-        for (wallet in newMostRecentUniqueWallets) {
-            val currentWallet = SWJoinBlockTransactionData(wallet.transaction).getData()
-            val found = lookForWalletInState(currentWallet.SW_UNIQUE_ID)
-            if (found.isEmpty()) {
-                fetchedWallets.add(wallet)
-            } else {
-                val mostRecentWallet = found.union(listOf(wallet)).maxBy { it.timestamp }!!
-                fetchedWallets[fetchedWallets.indexOf(found[0])] = mostRecentWallet
-            }
-        }
-    }
-
-    private fun lookForWalletInState(forId: String): List<TrustChainBlock> {
-        return fetchedWallets.filter {
-            SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID == forId
-        }
+        fetchedWallets = result
     }
 
     /**
