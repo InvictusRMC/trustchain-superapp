@@ -84,7 +84,7 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                     setAlertText("No DAOs found.")
                 } else {
                     activity?.runOnUiThread {
-                        alert_tf.visibility = View.GONE
+                        alert_tf?.visibility = View.GONE
                     }
                 }
             }
