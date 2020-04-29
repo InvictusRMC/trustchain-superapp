@@ -95,6 +95,9 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
         val walletIds = fetchedWallets.map {
             SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
         }
+        val timestamps = fetchedWallets.map {
+            it.timestamp
+        }
         val distinctById = newWallets
             .filter {
                 // Make sure that the trust chain block has the correct type
@@ -109,6 +112,12 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
             val currentId = SWJoinBlockTransactionData(wallet.transaction).getData().SW_UNIQUE_ID
             if (!walletIds.contains(currentId)) {
                 fetchedWallets.add(wallet)
+            } else {
+                // Wallet already present, check if the crawled wallet is newer
+                val timestamp = timestamps[walletIds.indexOf(currentId)]
+                if (timestamp < wallet.timestamp) {
+                    fetchedWallets.add(wallet)
+                }
             }
         }
     }
@@ -159,7 +168,9 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                     trustchain.crawlChain(peer)
                     val crawlResult = trustchain
                         .getChainByUser(peer.publicKey.keyToBin())
-
+                    if (crawlResult.size > 0) {
+                        Log.i("Coin", "Found ${crawlResult.size} crawled wallets from ${peer.publicKey.keyToBin().toHex()}")
+                    }
                     updateSharedWallets(crawlResult)
                 }
             } catch (t: Throwable) {

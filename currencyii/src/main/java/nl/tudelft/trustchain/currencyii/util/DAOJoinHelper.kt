@@ -58,6 +58,7 @@ class DAOJoinHelper {
             ""
         )
 
+        val proposalId = SWUtil.randomUUID()
         for (swParticipantPk in blockData.SW_TRUSTCHAIN_PKS) {
             Log.i(
                 "Coin",
@@ -68,7 +69,8 @@ class DAOJoinHelper {
                 serializedTransaction,
                 mostRecentBlockHash,
                 requiredSignatures,
-                swParticipantPk
+                swParticipantPk,
+                proposalId
             )
 
             trustchain.createProposalBlock(
