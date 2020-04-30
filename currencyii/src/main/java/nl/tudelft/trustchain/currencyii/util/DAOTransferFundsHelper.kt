@@ -53,6 +53,7 @@ class DAOTransferFundsHelper {
             ""
         )
 
+        val proposalId = SWUtil.randomUUID()
         for (swParticipantPk in walletData.SW_TRUSTCHAIN_PKS) {
             Log.i(
                 "Coin",
@@ -65,7 +66,8 @@ class DAOTransferFundsHelper {
                 satoshiAmount,
                 walletData.SW_BITCOIN_PKS,
                 receiverAddressSerialized,
-                swParticipantPk
+                swParticipantPk,
+                proposalId
             )
 
             trustchain.createProposalBlock(
@@ -213,6 +215,7 @@ class DAOTransferFundsHelper {
                 signatureSerialized
             )
 
+            Log.i("Coin", "Sending proposal block")
             trustchain.createProposalBlock(
                 agreementData.getTransactionData(),
                 myPublicKey,

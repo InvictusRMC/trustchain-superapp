@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_join_network.*
 import kotlinx.coroutines.*
-import nl.tudelft.trustchain.currencyii.CoinCommunity
 import nl.tudelft.trustchain.currencyii.ui.BaseFragment
 import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.ipv8.util.toHex
+import nl.tudelft.trustchain.currencyii.CoinCommunity
 import nl.tudelft.trustchain.currencyii.R
 import nl.tudelft.trustchain.currencyii.sharedWallet.SWJoinBlockTransactionData
 import nl.tudelft.trustchain.currencyii.sharedWallet.SWSignatureAskBlockTD
@@ -84,7 +84,7 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                     setAlertText("No DAOs found.")
                 } else {
                     activity?.runOnUiThread {
-                        alert_tf.visibility = View.GONE
+                        alert_tf?.visibility = View.GONE
                     }
                 }
             }
@@ -92,25 +92,22 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
     }
 
     private fun updateSharedWallets(newWallets: List<TrustChainBlock>) {
-        val walletIds = fetchedWallets.map {
-            SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
-        }
-        val distinctById = newWallets
+        val temp = ArrayList<TrustChainBlock>()
+        temp.addAll(fetchedWallets)
+        temp.addAll(newWallets)
+
+        val result = ArrayList(temp
             .filter {
                 // Make sure that the trust chain block has the correct type
                 it.type == CoinCommunity.JOIN_BLOCK
-            }.distinctBy {
+            }
+            .sortedByDescending { it.timestamp }
+            .distinctBy {
                 SWJoinBlockTransactionData(it.transaction).getData().SW_UNIQUE_ID
             }
+        )
 
-        Log.i("Coin", "${distinctById.size} unique wallets founds. Adding if not present already.")
-
-        for (wallet in distinctById) {
-            val currentId = SWJoinBlockTransactionData(wallet.transaction).getData().SW_UNIQUE_ID
-            if (!walletIds.contains(currentId)) {
-                fetchedWallets.add(wallet)
-            }
-        }
+        fetchedWallets = result
     }
 
     /**
@@ -159,7 +156,9 @@ class JoinDAOFragment() : BaseFragment(R.layout.fragment_join_network) {
                     trustchain.crawlChain(peer)
                     val crawlResult = trustchain
                         .getChainByUser(peer.publicKey.keyToBin())
-
+                    if (crawlResult.size > 0) {
+                        Log.i("Coin", "Found ${crawlResult.size} crawled wallets from ${peer.address.ip}")
+                    }
                     updateSharedWallets(crawlResult)
                 }
             } catch (t: Throwable) {
