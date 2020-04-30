@@ -9,7 +9,7 @@ This repository contains a collection of Android apps built on top of [IPv8](htt
 **TrustChain Explorer** allows to browse the TrustChain blocks stored locally on the device and crawl chains of other connected peers. It also demonstrates how to interact with `TrustChainCommunity`. It defines its own `DemoCommunity` to ensure that all users using the app are able to discover each other easily. The content of the app is split into several tabs:
 
 - **Peers:** A list of discovered peers in `DemoCommunity`. For each peer, there is a time since the last sent and received message, and an average ping latency. After clicking on the peer item, a list of mutual blocks in TrustChain is shown. It is possible to create and send a new proposal block by clicking on the plus icon. A crawl request send be sent by clicking on the refresh button.
-- **Chains:** A list of discovered chains in `TrustChainComunity`, ordered by their length. After clicking on the item, the list of stored blocks is shown.
+- **Chains:** A list of discovered chains in `TrustChainCommunity`, ordered by their length. After clicking on the item, the list of stored blocks is shown.
 - **All Blocks:** A stream of all received blocks, updated in real-time as new blocks are received from the network.
 - **My Chain:** A list of blocks in which the current user is participating either as a sender or a receiver. It is possible to create a new self-signed block by clicking on the plus icon. It is posible to sign received blocks if they are not defined to be signed automatically.
 
@@ -54,6 +54,28 @@ The bid and asks can either be generated automatically or manually. Those bids a
 
 <img src="trustchain-payloadgenerator/GeneratorImages/PayloadFragment.png" width="180"><br />
 [More about Market Bot](trustchain-payloadgenerator/readme.md)
+
+### Luxury Communism
+Luxury communism is an Android application built on top of [IPv8](https://github.com/Tribler/kotlin-ipv8) and [Trustchain](https://github.com/Tribler/kotlin-ipv8/blob/master/doc/TrustChainCommunity.md), and is integrated into the [Trustchain Superapp](https://github.com/Tribler/trustchain-superapp). It is a proof-of-concept implementation of a DAO system using Trustchain and Bitcoin. Trustchain is used for communication and bookkeeping while the Bitcoin blockchain is used to have collective multi-signature wallets for each DAO. The content of the app is split up in several tabs:
+* **First Time Launch**: The first time the app is launched, the user must setup his bitcoin wallet. Afterwhich the chain will sync and he is routed to the main screens.
+* **My DAO's**: A list of all DAO's that the user participates in. Selecting a DAO will allow a user to create a transfer proposal from that DAO.
+* **All DAO's**: A list of all discovered DAO's in the network which the user can propose to join.
+* **Proposals**: A list of all proposals that the user can vote on. This can either be join proposals or proposals from someone else to transfer funds from one of the DAO's.
+* **My Wallet**: Overview of the used Bitcoin wallet and the ability to chane this to another.
+* **Duplicate Wallet**: In case the user has wallet files for both TestNet and Production, the user is allowed to select which one to keep. After the user selected either one, the files belonging to other network type are backed up. This, thus, ensures that the wallet is not lost.
+
+<img src="currencyii/docs/images/screenshot_7.png" width="200px"> <img src="currencyii/docs/images/screenshot_6.png" width="200px"> <img src="currencyii/docs/images/screenshot_10.png" width="200px">
+<br />
+
+[More about Luxury Communism](currencyii/README.md)
+
+### TrustChain Voter
+The TrustChain Voter can be used to create a proposal on which the community can vote. The functionality has been split up in two parts: a Voting API, which provides the core voting functionality, and a TrustChain Voter submodule, which serves to demonstrate the capabilities of the voting API. Below, the process of creating a proposal (left) and casting a vote (right) can be seen.
+
+- [More about the Voting API](common/README.md#votinghelper)
+- [More about the TrustChain Voter submodule](trustchain-voter/README.md)
+
+<img src="doc/trustchain-voter/create-proposal.gif" width="280"> <img src="doc/trustchain-voter/cast-vote-process.gif" width="280"> 
 
 ### Do you want to add your own app?
 
